@@ -21,18 +21,19 @@ process STAR_GENOMEGENERATE {
     script:
     def args        = task.ext.args ?: ''
     def args_list   = args.tokenize()
-    def memory      = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
     def include_gtf = gtf ? "--sjdbGTFfile $gtf" : ''
     if (args_list.contains('--genomeSAindexNbases')) {
         """
         mkdir star
+        memory=\$(( \$FovusOptVcpuMem * 1024 * 1024 * 1024 - 100000000 ))
+
         STAR \\
             --runMode genomeGenerate \\
             --genomeDir star/ \\
             --genomeFastaFiles $fasta \\
             $include_gtf \\
             --runThreadN \$FovusOptVcpu \\
-            $memory \\
+            --limitGenomeGenerateRAM \$memory \\
             $args
 
         cat <<-END_VERSIONS > versions.yml
@@ -48,6 +49,7 @@ process STAR_GENOMEGENERATE {
         NUM_BASES=`gawk '{sum = sum + \$2}END{if ((log(sum)/log(2))/2 - 1 > 14) {printf "%.0f", 14} else {printf "%.0f", (log(sum)/log(2))/2 - 1}}' ${fasta}.fai`
 
         mkdir star
+        memory=\$(( \$FovusOptVcpuMem * 1024 * 1024 * 1024 - 100000000 ))
         STAR \\
             --runMode genomeGenerate \\
             --genomeDir star/ \\
@@ -55,7 +57,7 @@ process STAR_GENOMEGENERATE {
             $include_gtf \\
             --runThreadN \$FovusOptVcpu \\
             --genomeSAindexNbases \$NUM_BASES \\
-            $memory \\
+            --limitGenomeGenerateRAM \$memory \\
             $args
 
         cat <<-END_VERSIONS > versions.yml
