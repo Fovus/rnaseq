@@ -23,7 +23,7 @@ process SAMTOOLS_IDXSTATS {
     """
     samtools \\
         idxstats \\
-        --threads ${task.cpus-1} \\
+        --threads \$((FovusOptVcpu - 1)) \\
         $bam \\
         > ${prefix}.idxstats
 

@@ -32,12 +32,12 @@ process KRAKEN2_KRAKEN2 {
     def classified_option = save_output_fastqs ? "--classified-out ${classified}" : ""
     def unclassified_option = save_output_fastqs ? "--unclassified-out ${unclassified}" : ""
     def readclassification_option = save_reads_assignment ? "--output ${prefix}.kraken2.classifiedreads.txt" : "--output /dev/null"
-    def compress_reads_command = save_output_fastqs ? "pigz -p $task.cpus *.fastq" : ""
+    def compress_reads_command = save_output_fastqs ? "pigz -p \$FovusOptVcpu *.fastq" : ""
 
     """
     kraken2 \\
         --db $db \\
-        --threads $task.cpus \\
+        --threads \$FovusOptVcpu \\
         --report ${prefix}.kraken2.report.txt \\
         --gzip-compressed \\
         $unclassified_option \\
@@ -63,7 +63,7 @@ process KRAKEN2_KRAKEN2 {
     def classified   = meta.single_end ? "${prefix}.classified.fastq.gz"   : "${prefix}.classified_1.fastq.gz ${prefix}.classified_2.fastq.gz"
     def unclassified = meta.single_end ? "${prefix}.unclassified.fastq.gz" : "${prefix}.unclassified_1.fastq.gz ${prefix}.unclassified_2.fastq.gz"
     def readclassification_option = save_reads_assignment ? "--output ${prefix}.kraken2.classifiedreads.txt" : "--output /dev/null"
-    def compress_reads_command = save_output_fastqs ? "pigz -p $task.cpus *.fastq" : ""
+    def compress_reads_command = save_output_fastqs ? "pigz -p \$FovusOptVcpu *.fastq" : ""
 
     """
     touch ${prefix}.kraken2.report.txt

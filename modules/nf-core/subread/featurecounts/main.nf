@@ -34,7 +34,7 @@ process SUBREAD_FEATURECOUNTS {
     featureCounts \\
         ${args} \\
         ${paired_end} \\
-        -T ${task.cpus} \\
+        -T \$FovusOptVcpu \\
         -a ${annotation} \\
         -s ${strandedness} \\
         -o ${prefix}.featureCounts.tsv \\

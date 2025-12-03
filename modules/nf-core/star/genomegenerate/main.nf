@@ -31,7 +31,7 @@ process STAR_GENOMEGENERATE {
             --genomeDir star/ \\
             --genomeFastaFiles $fasta \\
             $include_gtf \\
-            --runThreadN $task.cpus \\
+            --runThreadN \$FovusOptVcpu \\
             $memory \\
             $args
 
@@ -53,7 +53,7 @@ process STAR_GENOMEGENERATE {
             --genomeDir star/ \\
             --genomeFastaFiles $fasta \\
             $include_gtf \\
-            --runThreadN $task.cpus \\
+            --runThreadN \$FovusOptVcpu \\
             --genomeSAindexNbases \$NUM_BASES \\
             $memory \\
             $args

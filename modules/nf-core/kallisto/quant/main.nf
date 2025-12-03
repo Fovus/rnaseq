@@ -49,7 +49,7 @@ process KALLISTO_QUANT {
 
     """
     mkdir -p $prefix && kallisto quant \\
-            --threads ${task.cpus} \\
+            --threads \$FovusOptVcpu \\
             --index ${index} \\
             ${gtf_input} \\
             ${chromosomes_input} \\

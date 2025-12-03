@@ -43,7 +43,7 @@ process HISAT2_ALIGN {
             $strandedness \\
             $ss \\
             --summary-file ${prefix}.hisat2.summary.log \\
-            --threads $task.cpus \\
+            --threads \$FovusOptVcpu \\
             $seq_center \\
             $unaligned \\
             $args \\
@@ -66,7 +66,7 @@ process HISAT2_ALIGN {
             $strandedness \\
             $ss \\
             --summary-file ${prefix}.hisat2.summary.log \\
-            --threads $task.cpus \\
+            --threads \$FovusOptVcpu \\
             $seq_center \\
             $unaligned \\
             --no-mixed \\

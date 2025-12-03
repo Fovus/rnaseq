@@ -30,7 +30,7 @@ process BEDTOOLS_GENOMECOV {
     // Sorts output file by chromosome and position using additional options for performance and consistency
     // See https://www.biostars.org/p/66927/ for further details
     def buffer   = task.memory ? "--buffer-size=${task.memory.toGiga().intdiv(2)}G" : ''
-    def sort_cmd = sort ? "| LC_ALL=C sort --parallel=$task.cpus $buffer -k1,1 -k2,2n" : ''
+    def sort_cmd = sort ? "| LC_ALL=C sort --parallel=\$FovusOptVcpu $buffer -k1,1 -k2,2n" : ''
 
     def prefix = task.ext.prefix ?: "${meta.id}"
     if (intervals.name =~ /\.bam/) {

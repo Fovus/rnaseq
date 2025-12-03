@@ -43,7 +43,7 @@ process STRINGTIE_STRINGTIE {
         -A ${prefix}.gene.abundance.txt \\
         $coverage \\
         $ballgown \\
-        -p $task.cpus \\
+        -p \$FovusOptVcpu \\
         $args
 
     cat <<-END_VERSIONS > versions.yml

@@ -84,7 +84,7 @@ process BBMAP_BBSPLIT {
     bbsplit.sh \\
         -Xmx${avail_mem}M \\
         $index_files \\
-        threads=$task.cpus \\
+        threads=\$FovusOptVcpu \\
         $fastq_in \\
         $fastq_out \\
         $refstats_cmd \\

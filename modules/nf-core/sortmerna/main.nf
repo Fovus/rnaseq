@@ -59,7 +59,7 @@ process SORTMERNA {
         ${'--ref '+fastas.join(' --ref ')} \\
         $refs_input \\
         $reads_input \\
-        --threads $task.cpus \\
+        --threads \$FovusOptVcpu \\
         --workdir . \\
         $reads_args \\
         $paired_cmd \\

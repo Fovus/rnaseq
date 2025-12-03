@@ -32,13 +32,13 @@ process RSEM_PREPAREREFERENCE {
             --genomeDir rsem/ \\
             --genomeFastaFiles $fasta \\
             --sjdbGTFfile $gtf \\
-            --runThreadN $task.cpus \\
+            --runThreadN \$FovusOptVcpu \\
             $memory \\
             $args2
 
         rsem-prepare-reference \\
             --gtf $gtf \\
-            --num-threads $task.cpus \\
+            --num-threads \$FovusOptVcpu \\
             ${args_list.join(' ')} \\
             $fasta \\
             rsem/genome
@@ -55,7 +55,7 @@ process RSEM_PREPAREREFERENCE {
         """
         rsem-prepare-reference \\
             --gtf $gtf \\
-            --num-threads $task.cpus \\
+            --num-threads \$FovusOptVcpu \\
             $args \\
             $fasta \\
             rsem/genome

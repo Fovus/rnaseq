@@ -23,22 +23,10 @@ process TRIMGALORE {
 
     script:
     def args = task.ext.args ?: ''
-    // Calculate number of --cores for TrimGalore based on value of task.cpus
+    // Calculate number of --cores for TrimGalore based on value of $FovusOptVcpu
     // See: https://github.com/FelixKrueger/TrimGalore/blob/master/CHANGELOG.md#version-060-release-on-1-mar-2019
     // See: https://github.com/nf-core/atacseq/pull/65
-    def cores = 1
-    if (task.cpus) {
-        cores = (task.cpus as int) - 4
-        if (meta.single_end) {
-            cores = (task.cpus as int) - 3
-        }
-        if (cores < 1) {
-            cores = 1
-        }
-        if (cores > 8) {
-            cores = 8
-        }
-    }
+    // Updated to use $FovusOptVcpu token
 
     // Added soft-links to original fastqs for consistent naming in MultiQC
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -46,10 +34,18 @@ process TRIMGALORE {
         def args_list = args.split("\\s(?=--)").toList()
         args_list.removeAll { it.toLowerCase().contains('_r2 ') }
         """
+        # Calculate cores for TrimGalore: single-end uses vCPUs - 3
+        cores=\$(( \$FovusOptVcpu - 3 ))
+        if [ \$cores -lt 1 ]; then
+            cores=1
+        elif [ \$cores -gt 8 ]; then
+            cores=8
+        fi
+
         [ ! -f  ${prefix}.fastq.gz ] && ln -s ${reads} ${prefix}.fastq.gz
         trim_galore \\
             ${args_list.join(' ')} \\
-            --cores ${cores} \\
+            --cores \$cores \\
             --gzip \\
             ${prefix}.fastq.gz
 
@@ -63,11 +59,19 @@ process TRIMGALORE {
     }
     else {
         """
+        # Calculate cores for TrimGalore: paired-end uses vCPUs - 4
+        cores=\$(( \$FovusOptVcpu - 4 ))
+        if [ \$cores -lt 1 ]; then
+            cores=1
+        elif [ \$cores -gt 8 ]; then
+            cores=8
+        fi
+
         [ ! -f  ${prefix}_1.fastq.gz ] && ln -s ${reads[0]} ${prefix}_1.fastq.gz
         [ ! -f  ${prefix}_2.fastq.gz ] && ln -s ${reads[1]} ${prefix}_2.fastq.gz
         trim_galore \\
             ${args} \\
-            --cores ${cores} \\
+            --cores \$cores \\
             --paired \\
             --gzip \\
             ${prefix}_1.fastq.gz \\
