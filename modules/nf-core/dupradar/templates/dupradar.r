@@ -29,7 +29,7 @@ parse_args <- function(x){
 input_bam <- '$bam'
 output_prefix = ifelse('$task.ext.prefix' == 'null', '$meta.id', '$task.ext.prefix')
 annotation_gtf <- '$gtf'
-threads <- '\$FovusOptVcpu'
+threads <- as.numeric(Sys.getenv('FovusOptVcpu'))
 args_opt <- parse_args('$task.ext.args')
 feature_type <- ifelse('feature_type' %in% names(args_opt), args_opt[['feature_type']], 'exon')
 
