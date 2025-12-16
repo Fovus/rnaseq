@@ -21,18 +21,20 @@ process STAR_GENOMEGENERATE_IGENOMES {
     script:
     def args = task.ext.args ?: ''
     def args_list = args.tokenize()
-    def memory = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
     def include_gtf = gtf ? "--sjdbGTFfile $gtf" : ''
     if (args_list.contains('--genomeSAindexNbases')) {
         """
+        # Calculate memory for STAR (in bytes) using FovusOptVcpuMem token
+        memory=\$(( \$FovusOptVcpuMem * 1024 * 1024 - 100000000 ))
+
         mkdir star
         STAR \\
             --runMode genomeGenerate \\
             --genomeDir star/ \\
             --genomeFastaFiles $fasta \\
             $include_gtf \\
-            --runThreadN $task.cpus \\
-            $memory \\
+            --runThreadN \$FovusOptVcpu \\
+            --limitGenomeGenerateRAM \$memory \\
             $args
 
         cat <<-END_VERSIONS > versions.yml
@@ -44,6 +46,9 @@ process STAR_GENOMEGENERATE_IGENOMES {
         """
     } else {
         """
+         # Calculate memory for STAR (in bytes) using FovusOptVcpuMem token
+        memory=\$(( \$FovusOptVcpuMem * 1024 * 1024 - 100000000 ))
+
         samtools faidx $fasta
         NUM_BASES=`gawk '{sum = sum + \$2}END{if ((log(sum)/log(2))/2 - 1 > 14) {printf "%.0f", 14} else {printf "%.0f", (log(sum)/log(2))/2 - 1}}' ${fasta}.fai`
 
@@ -53,9 +58,9 @@ process STAR_GENOMEGENERATE_IGENOMES {
             --genomeDir star/ \\
             --genomeFastaFiles $fasta \\
             $include_gtf \\
-            --runThreadN $task.cpus \\
+            --runThreadN \$FovusOptVcpu \\
             --genomeSAindexNbases \$NUM_BASES \\
-            $memory \\
+            --limitGenomeGenerateRAM \$memory \\
             $args
 
         cat <<-END_VERSIONS > versions.yml

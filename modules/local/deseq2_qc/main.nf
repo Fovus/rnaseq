@@ -37,7 +37,7 @@ process DESEQ2_QC {
     deseq2_qc.r \\
         --count_file $counts \\
         --outdir ./ \\
-        --cores $task.cpus \\
+        --cores \$FovusOptVcpu \\
         --outprefix $prefix \\
         $args
 

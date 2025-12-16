@@ -49,7 +49,7 @@ process HISAT2_BUILD {
     mkdir hisat2
     ${extract_exons}
     hisat2-build \\
-        -p ${task.cpus} \\
+        -p \$FovusOptVcpu \\
         ${ss} \\
         ${exon} \\
         ${args} \\

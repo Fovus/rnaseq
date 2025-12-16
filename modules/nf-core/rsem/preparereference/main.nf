@@ -25,20 +25,21 @@ process RSEM_PREPAREREFERENCE {
     def args_list = args.tokenize()
     if (args_list.contains('--star')) {
         args_list.removeIf { it.contains('--star') }
-        def memory = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
         """
+        memory=\$(( \$FovusOptVcpuMem * 1024 * 1024 * 1024 - 100000000 ))
+        
         STAR \\
             --runMode genomeGenerate \\
             --genomeDir rsem/ \\
             --genomeFastaFiles $fasta \\
             --sjdbGTFfile $gtf \\
-            --runThreadN $task.cpus \\
-            $memory \\
+            --runThreadN \$FovusOptVcpu \\
+            --limitGenomeGenerateRAM \$memory \\
             $args2
 
         rsem-prepare-reference \\
             --gtf $gtf \\
-            --num-threads $task.cpus \\
+            --num-threads \$FovusOptVcpu \\
             ${args_list.join(' ')} \\
             $fasta \\
             rsem/genome
@@ -55,7 +56,7 @@ process RSEM_PREPAREREFERENCE {
         """
         rsem-prepare-reference \\
             --gtf $gtf \\
-            --num-threads $task.cpus \\
+            --num-threads \$FovusOptVcpu \\
             $args \\
             $fasta \\
             rsem/genome

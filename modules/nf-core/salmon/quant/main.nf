@@ -77,7 +77,7 @@ process SALMON_QUANT {
     """
     salmon quant \\
         --geneMap ${gtf} \\
-        --threads ${task.cpus} \\
+        --threads \$FovusOptVcpu \\
         --libType=${strandedness} \\
         ${reference} \\
         ${input_reads} \\

@@ -39,7 +39,7 @@ process RSEM_CALCULATEEXPRESSION {
     """
     INDEX=`find -L ./ -name "*.grp" | sed 's/\\.grp\$//'`
     rsem-calculate-expression \\
-        --num-threads $task.cpus \\
+        --num-threads \$FovusOptVcpu \\
         --temporary-folder ./tmp/ \\
         $strandedness \\
         $paired_end \\

@@ -28,7 +28,6 @@ process UMICOLLAPSE {
     // Memory allocation: We need to make sure that both heap and stack size is sufficiently large for
     // umicollapse. We set the stack size to 5% of the available memory, the heap size to 90%
     // which leaves 5% for stuff happening outside of java without the scheduler killing the process.
-    def max_heap_size_mega = (task.memory.toMega() * 0.9).intValue()
     def max_stack_size_mega = 999 //most java jdks will not allow Xss > 1GB, so fixing this to the allowed max
     if ( mode !in [ 'fastq', 'bam' ] ) {
         error "Mode must be one of 'fastq' or 'bam'."
@@ -39,9 +38,10 @@ process UMICOLLAPSE {
     # by conda that allows to set the heap size (Xmx), but not the stack size (Xss).
     # `which` allows us to get the directory that contains `umicollapse`, independent of whether we
     # are in a container or conda environment.
+    max_heap_size_mega=\$(( \$FovusOptVcpuMem * 1024 * 9 / 10 ))
     UMICOLLAPSE_JAR=\$(dirname \$(which umicollapse))/../share/umicollapse-${VERSION}/umicollapse.jar
     java \\
-        -Xmx${max_heap_size_mega}M \\
+        -Xmx\${max_heap_size_mega}M \\
         -Xss${max_stack_size_mega}M \\
         -jar \$UMICOLLAPSE_JAR \\
         $mode \\

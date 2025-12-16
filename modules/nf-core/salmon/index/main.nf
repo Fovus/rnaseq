@@ -40,7 +40,7 @@ process SALMON_INDEX {
 
     salmon \\
         index \\
-        --threads $task.cpus \\
+        --threads \$FovusOptVcpu \\
         -t $fasta \\
         $decoys \\
         $args \\

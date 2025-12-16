@@ -22,7 +22,7 @@ process SAMTOOLS_FLAGSTAT {
     """
     samtools \\
         flagstat \\
-        --threads ${task.cpus} \\
+        --threads \$FovusOptVcpu \\
         $bam \\
         > ${prefix}.flagstat
 

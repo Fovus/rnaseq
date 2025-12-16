@@ -27,18 +27,14 @@ process PICARD_MARKDUPLICATES {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def suffix = task.ext.suffix    ?: "${reads.getExtension()}"
     def reference = fasta ? "--REFERENCE_SEQUENCE ${fasta}" : ""
-    def avail_mem = 3072
-    if (!task.memory) {
-        log.info '[Picard MarkDuplicates] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.'
-    } else {
-        avail_mem = (task.memory.mega*0.8).intValue()
-    }
 
     if ("$reads" == "${prefix}.${suffix}") error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
 
     """
+    avail_mem=\$(( \$FovusOptVcpuMem * 1024 * 8 / 10 ))
+
     picard \\
-        -Xmx${avail_mem}M \\
+        -Xmx\${avail_mem}M \\
         MarkDuplicates \\
         $args \\
         --INPUT $reads \\

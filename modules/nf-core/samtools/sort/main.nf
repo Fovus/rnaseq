@@ -37,7 +37,7 @@ process SAMTOOLS_SORT {
     samtools sort \\
         $args \\
         -T ${prefix} \\
-        --threads $task.cpus \\
+        --threads \$FovusOptVcpu \\
         ${reference} \\
         -o ${prefix}.${extension} \\
         -

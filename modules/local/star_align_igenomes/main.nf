@@ -48,7 +48,7 @@ process STAR_ALIGN_IGENOMES {
     STAR \\
         --genomeDir $index \\
         --readFilesIn ${reads1.join(",")} ${reads2.join(",")} \\
-        --runThreadN $task.cpus \\
+        --runThreadN \$FovusOptVcpu \\
         --outFileNamePrefix $prefix. \\
         $out_sam_type \\
         $ignore_gtf \\
